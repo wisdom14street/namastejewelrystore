@@ -1,0 +1,18 @@
+{
+  "brand": "Namaste Jewelry Store",
+  "short_name": "Jewelry Store",
+  "site_url": "https://namastejewelrystore.com",
+  "storefront": "Namaste Jewelry Store",
+  "REVIEW_URL": "",
+  "GOOGLE_SITE_VERIFICATION": "",
+  "store_type": "JewelryStore",
+  "price_range": "$",
+  "icon": "tag",
+  "layout": "l-gift",
+  "max_price": 30,
+  "kinds": ["pendant", "necklace", "chain", "ring", "beaded", "bracelet", "earrings", "mala", "anklet", "charm"],
+  "best_collections": ["bracelets", "plated-pendant", "plated-rings", "evil-eye-bracelet", "earrrings", "carded-pendant"],
+  "siblings": [["Namaste Crystal Jewelry: the full collection", "https://namastecrystaljewelry.com/"], ["Namaste Jewelry Shop: sterling & fine", "https://namastejewelryshop.com/"], ["Namaste Bead Store: stone bracelets by intention", "https://namastebeadstore.com/"], ["Namaste Incense Store", "https://namasteincensestore.com/"]],
+  "theme": {"ink": "#1f2a44", "paper": "#fff8f1", "accent": "#ff7a59",
+            "fonts": "https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Rubik:wght@400;500;700&display=swap"}
+}

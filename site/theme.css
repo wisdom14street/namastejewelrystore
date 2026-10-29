@@ -1,0 +1,7 @@
+:root{--ink:#1f2a44;--onink:#fff8f1;--paper:#fff8f1;--card:#ffffff;--soft:#ffe9dc;--muted:#5a6275;--line:#f1dccd;--accent:#ff7a59;--onaccent:#1f2a44;--accentdark:#b23a1c;--focus:#1b6fd1;
+--display:Fredoka,"Trebuchet MS",sans-serif;--body:Rubik,system-ui,-apple-system,"Segoe UI",sans-serif;--r:18px;--btnr:12px}
+.hero{background:radial-gradient(700px 360px at 90% 0%,#ffcf5c66,transparent 60%),radial-gradient(600px 380px at 0% 100%,#2ec4b655,transparent 60%),linear-gradient(135deg,#1f2a44,#2d3d63)}
+.hero h1 em{font-style:normal;color:#ffcf5c}.price{color:#b23a1c;font-size:17px}
+.card{border:2px solid var(--line)}.card:hover{border-color:var(--accent)}
+.collage img{border-radius:22px;transform:rotate(-2deg)}.collage img:nth-child(2){transform:rotate(3deg) translateY(14px)}
+.bar{background:#ffcf5c;color:#1f2a44}.chip{border-width:2px}
