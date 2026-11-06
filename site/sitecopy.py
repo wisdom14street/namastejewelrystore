@@ -43,7 +43,7 @@ HERO_BASES = ('beaded', 'ring', 'pendant', 'earrings')
 def HERO(S):
     return {'eyebrow': 'Everything under $30 &middot; 2 West 14th Street &middot; Union Square',
             'h1': 'Crystal jewelry gifts, <em>all under $30.</em>',
-            'lede': f'{S.N:,} rings, bracelets, pendants and earrings with real stones, {S.UNDER10:,} under $10 and the rest under $30. Pick a gift online, then grab it on 14th Street on your way.' + (f' Pickup orders are {S.READY.lower()}.' if S.PICKUP_ON else ''),
+            'lede': f'{S.N:,} rings, bracelets, pendants and earrings with real stones, {S.UNDER10:,} under $10 and the rest under $30. Pick a gift online, then grab it on 14th Street on your way.' + (' Check pickup options at checkout and wait for your pickup email.' if S.PICKUP_ON else ''),
             'shop_cta': 'Shop gifts'}
 BIRTH = [('january', 'January', 'garnet', ['garnet']), ('february', 'February', 'amethyst', ['amethyst']), ('march', 'March', 'aquamarine', ['aquamarine', 'bloodstone']),
          ('april', 'April', 'diamond (try clear quartz or Herkimer diamond quartz)', ['clear-quartz', 'herkimer']), ('may', 'May', 'emerald', ['emerald', 'aventurine', 'jade']),
@@ -55,9 +55,9 @@ def _birth(S):
     return f'<section class="wrap"><div class="sechead"><h2>Birthstone gifts</h2><a href="/birthstones/">All months &rarr;</a></div><div class="scents">{tiles}</div></section>'
 def _near(S): return f'<section class="wrap"><div class="sechead"><h2>On your way? Directions from</h2></div>{hood_list(S, "/near/")}</section>'
 def _whys(S):
-    return [('Nothing over $30', 'Every piece on this site is under thirty dollars, and the price on the card is the price.'),
+    return [('Gifts under $30', 'Browse our daily catalog prices, then check the price for your selected option at checkout.'),
             (f'{S.UNDER10:,} gifts under $10', 'Charms, cord pendants, adjustable rings and mini bracelets for stockings and goody bags.'),
-            (('Pick up in about 2 hours', f'Order on your phone, choose Pickup and collect on 14th Street. Orders are {S.READY.lower()}.') if S.PICKUP_ON else ('', '')),
+            (('Pickup at Namaste Bookshop', 'Choose Pickup if offered at checkout. Wait for the ready-for-pickup email before traveling.') if S.PICKUP_ON else ('', '')),
             ('Real stones', 'Amethyst, rose quartz, tiger\'s eye and dozens more, named on every listing.'),
             ('Open late on weekends', 'Until 9 PM Friday and Saturday for last-minute presents.'),
             ('Easy to find', 'On 14th Street at Fifth Avenue, steps from Union Square.')]
@@ -65,7 +65,7 @@ def _best(S): return S.by_rank(S.leaders)[:8]
 def _u10(S): return S.by_rank([x for x in S.leaders if x['price'] < 10 and not x['noimg']])[:8]
 def _sale(S): return S.by_rank([x for x in S.leaders if x['compare'] and not x['noimg']])[:8]
 HOME_SECTIONS = [
- {'type': 'grid', 'title': 'Best sellers under $30', 'select': _best, 'href': '/shop/', 'link': 'All gifts', 'intro': 'Ranked by sales on namastebookshop.com and refreshed daily.'},
+ {'type': 'grid', 'title': 'Best sellers under $30', 'needs_rank': True, 'fallback_title': 'Gift picks under $30', 'select': _best, 'href': '/shop/', 'link': 'All gifts', 'intro': 'Based on Namaste Bookshop collection best-selling order, refreshed with the catalog.'},
  {'type': 'collections', 'title': 'Gift guides', 'items': [
    {'title': 'Under $10', 'blurb': 'Stocking stuffers and add-ons.', 'href': '/shop/under-10/', 'filter': {'maxp': 10}},
    {'title': 'Evil eye gifts', 'blurb': 'Bracelets, rings and pendants.', 'href': '/gifts/evil-eye/', 'filter': {'style': ['Evil eye & hamsa']}},
@@ -82,11 +82,11 @@ HOME_SECTIONS = [
  {'type': 'html', 'html': _near},
  {'type': 'brands', 'title': 'Brands under $30', 'n': 10},
  {'type': 'review'},
- {'type': 'band', 'title': 'Order now, grab it later', 'text': lambda S: 'Every listing shows its live price and stock. Reserve a gift and pick it up on 14th Street, or ship it from New York City.',
-  'steps': lambda S: [('Choose a gift', 'Filter by stone, price, metal, style or brand.'), ('Pick Pickup at checkout', f'Pay securely on Shopify. {S.READY or "Ready the same day in most cases"}.'), ('Grab it', S.STORE_ADDR + '.')]},
+ {'type': 'band', 'title': 'Order now, grab it later', 'text': lambda S: 'Browse prices from our daily catalog. Product pages check for updates; checkout confirms the final price, availability and delivery options.',
+  'steps': lambda S: [('Choose a gift', 'Filter by stone, price, metal, style or brand.'), ('Review delivery at checkout', 'Pay securely on Shopify. Choose Pickup if it is offered for your items.'), ('Wait for your pickup email', S.STORE_ADDR + '. Come after the ready-for-pickup email arrives.')]},
 ]
 def HOME_TITLE(S): return 'Namaste Jewelry Store | Crystal Jewelry Gifts Under $30 near Union Square NYC'
-def HOME_DESC(S): return f'{S.N:,} crystal jewelry gifts under $30 at {S.STORE_ADDR}, by Union Square: beaded bracelets, adjustable rings, pendants, earrings and birthstone gifts. Pickup in about 2 hours.'
+def HOME_DESC(S): return f'{S.N:,} crystal jewelry gifts under $30 inside Namaste Bookshop at {S.STORE_ADDR}, by Union Square: bracelets, rings, pendants, earrings and birthstone gifts.'
 def SHOP_TITLE(S): return 'Shop Crystal Jewelry Under $30 | Namaste Jewelry Store NYC'
 def SHOP_DESC(S): return f'Browse {S.N:,} affordable crystal jewelry gifts from {S.money(S.MIN_PRICE)}, all under $30. Pick up at 2 West 14th Street, Manhattan, or ship.'
 SHOP_H1 = 'All gifts under $30'
@@ -117,7 +117,7 @@ def STONE_PAGE(S, k, xs):
     return {'title': f'{n} Jewelry Gifts Under $30 | Namaste Jewelry Store NYC', 'desc': f'{len(xs)} {n.lower()} gifts from {S.money(lo)}, all under $30, at 2 West 14th Street by Union Square.',
             'h1': f'{n} gifts under $30', 'sub': f'{len(xs)} pieces from {S.money(lo)}' + (f', {u10} under $10' if u10 else ''),
             'intro': (f'<p class="note-belief">Gift note: many people give {E(n.lower())} for {plist(tr)}, following crystal tradition. It is a sweet sentiment, not a proven effect.</p>' if tr else ''),
-            'faq': [(f'What is the cheapest {n.lower()} jewelry you have?', f'Right now {n.lower()} starts at {S.money(lo)}.'), (f'Can I pick up {n.lower()} jewelry today?', f'Order online and choose Pickup; orders are {S.READY.lower() or "usually ready the same day"}. We are at {S.STORE_ADDR}.')], 'faq_title': 'Quick answers'}
+            'faq': [(f'What is the cheapest {n.lower()} jewelry you have?', f'Right now {n.lower()} starts at {S.money(lo)}.'), (f'Can I pick up {n.lower()} jewelry today?', f'Choose Pickup if offered for your items at checkout, and wait for the ready-for-pickup email. We are inside Namaste Bookshop at {S.STORE_ADDR}.')], 'faq_title': 'Quick answers'}
 def intent_tile(S, k): return f'{S.intent_count[k]} gifts'
 def INTENT_PAGE(S, k, xs):
     n = S.INTENT_NAME[k]; lo = min(x['price'] for x in xs)
@@ -152,15 +152,15 @@ def describe(S, x):
     elif x['size']: s.append(f'Ring size {E(x["size"])}.')
     if k == 'beaded': s.append('Stretch bracelets fit most adult wrists; roll it on rather than pulling.')
     if stn and stn[0] not in S.NON_STONE and tradition(S, stn[0]): s.append(f'Write it in the card: crystal tradition ties {E(S.STONE_NAME[stn[0]].lower())} to {plist(tradition(S, stn[0]))}. A meaning, not a medical claim.')
-    s.append('Natural stones vary, so every piece is a little one-of-a-kind.')
-    s.append('Pick it up at 2 West 14th Street by Union Square or have it shipped from NYC; checkout is on Shopify through namastebookshop.com.')
+    if stn and stn[0] not in S.NON_STONE: s.append('Natural stones vary, so every piece is a little one-of-a-kind.')
+    s.append('Checkout is on Shopify through namastebookshop.com. Choose shipping or pickup if offered for your selected option; wait for the pickup email before visiting 2 West 14th Street.')
     return s
 def PRODUCT_DESC(S, x, v0): return f"{x['title']}: a {S.money(v0['price'])} crystal jewelry gift. " + ('Pick up at 2 West 14th Street by Union Square or ship.' if x['pickup'] else 'At 2 West 14th Street, NYC.')
 def ABOUT_DESC(S): return 'About Namaste Jewelry Store, the under-$30 crystal jewelry gift shop at 2 West 14th Street by Union Square. A brand of Wealth Edge Ventures Inc.'
 ABOUT_H1 = 'About Namaste Jewelry Store'
 def ABOUT(S):
     return f'''<p class="lead">Namaste Jewelry Store is the value side of our jewelry counter at {S.STORE_ADDR}: real-stone jewelry where nothing costs $30 or more.</p>
-<p>We built this site for gift shopping. {S.N:,} pieces are sorted by price first, then by stone, birthstone and occasion, with live prices and stock.{" Order online and pick it up in store on your way." if S.PICKUP_ON else ""}</p>
+<p>We built this site for gift shopping. {S.N:,} pieces are sorted by price first, then by stone, birthstone and occasion. The catalog refreshes daily; product pages check for price and stock updates, and checkout confirms your selected option.</p>
 <h2>Find us</h2><p>{S.STORE_ADDR}. Call <a href="tel:{S.TEL}">{S.PHONE}</a>.</p>{S.hours_html()}{S.visit_buttons()}
 <h2>Who we are</h2><p>{S.LEGAL} Checkout and fulfillment run on Shopify through <a href="{S.SHOP}" rel="noopener">namastebookshop.com</a>.</p>
 <h2>Stone meanings</h2><p>We mention the meanings crystal traditions give to stones because they make gifts personal. They are traditions, not promises.</p>'''
@@ -170,8 +170,8 @@ def VISIT_LEAD(S): return f'Grab your gift at {S.STORE_ADDR}, on 14th Street jus
 def FAQ_DESC(S): return 'Gift shopping answers: prices, pickup timing, ring sizes, gift ideas and returns at Namaste Jewelry Store.'
 FAQ_H1 = 'Gift shopping questions'
 def FAQ(S):
-    return [('Is everything really under $30?', 'Yes. This site only lists pieces under $30. Prices update every day.'),
-            ('How fast can I pick up a gift?', 'Choose Pickup at checkout.' + (f' Orders are {S.READY.lower()}.' if S.READY else '') + f' We are at {S.STORE_ADDR}.'),
+    return [('Is everything really under $30?', 'Listings start under $30 in our daily catalog. Check the price for your selected option; checkout confirms the current price, shipping and tax.'),
+            ('How fast can I pick up a gift?', 'Check the pickup estimate for your items at checkout, and wait for the ready-for-pickup email before traveling.' + f' We are inside Namaste Bookshop at {S.STORE_ADDR}.'),
             ('I do not know their ring size. What should I get?', 'Try an <a href="/gifts/adjustable-rings/">adjustable ring</a> or a stretch <a href="/gifts/bracelets/">bracelet</a>.'),
             ('What is their birthstone?', 'See <a href="/birthstones/">birthstone gifts by month</a>, with popular alternatives for pricey stones.'),
             ('Are these real stones?', 'Listings name the stone as our suppliers describe it. Some favorites, like goldstone and opalite, are man-made glass by nature.'),
@@ -187,7 +187,7 @@ HOOD_LINE = {'union-square': 'Running late for a party near Union Square? The gi
 def HOODS(S):
     picks = S.by_rank([x for x in S.leaders if not x['noimg'] and x['price'] < 20])[:8]
     return [{'path': f'/near/{k}/', 'title': f'Jewelry Gifts Under $30 near {n} | Namaste Jewelry Store', 'h1': f'Gifts under $30 near {n}',
-             'desc': f'Affordable crystal jewelry gifts near {n}: {S.N:,} pieces under $30 at {S.STORE_ADDR}. Pickup in about 2 hours.',
+             'desc': f'Affordable crystal jewelry gifts near {n}: {S.N:,} pieces under $30 inside Namaste Bookshop at {S.STORE_ADDR}. Check pickup options at checkout.',
              'html': f'<p class="lead">{E(HOOD_LINE[k])}</p><h2>How to get here from {E(n)}</h2><p>{E(route)}</p><h2>Popular gifts under $20</h2>{S.grid(picks)}{S.visit_block()}<h2>Other neighborhoods</h2>{hood_list(S, "/near/", k)}'}
             for k, n, route in HOOD_DATA]
 NOT_FOUND = 'That gift has been snapped up'

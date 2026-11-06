@@ -7,7 +7,7 @@ COPY = {'og_tag': 'Real-stone jewelry gifts, all under $30',
  'heroloc': 'Grabbing a gift in person? Come to <b>Namaste Bookshop</b>, 2 W 14th St, on the south side next to Fifth Ave. Everything here is inside, under '
             'the Namaste Bookshop sign.',
  'badges': [('Shopify checkout', 'Safe and quick'),
-            ('Pick up in about 2 hours', 'Inside Namaste Bookshop'),
+            ('Pickup options', 'Confirm availability at checkout'),
             ('Nothing over $30', 'Gifts from under $10'),
             ('Open daily', 'From 11 AM')],
  'chips_title': "Shop by who it's for",
@@ -32,7 +32,7 @@ COPY = {'og_tag': 'Real-stone jewelry gifts, all under $30',
  'visit_desc': 'Namaste Jewelry Store sells jewelry gifts under $30 inside Namaste Bookshop, 2 West 14th Street, south side near Fifth Ave. Walking routes, '
                'hours, pickup and quick answers.',
  'visit_h1': 'How to find our gift counter inside Namaste Bookshop',
- 'visit_lead': 'Every under-$30 piece on this site is stocked inside <b>Namaste Bookshop</b> at 2 West 14th Street. There is no separate Namaste Jewelry Store '
+ 'visit_lead': 'Find our jewelry gift counter inside <b>Namaste Bookshop</b> at 2 West 14th Street. Call ahead to check a specific piece. There is no separate Namaste Jewelry Store '
                'sign: look for Namaste Bookshop.',
  'sign': 'Namaste Bookshop is on the south side of 14th Street, right at the Fifth Avenue end of the block. Pop in under the sign and ask for the jewelry '
          'gifts.',
@@ -42,11 +42,11 @@ COPY = {'og_tag': 'Real-stone jewelry gifts, all under $30',
  'sixth': ['Take the F, M or L to 14th Street and Sixth Avenue, or connect through from the 1, 2 and 3 at Seventh Avenue.',
            'Walk east on 14th Street, keeping to the south side.',
            'The Namaste Bookshop sign is on the right near the corner of Fifth Avenue. About 4 minutes from the train.'],
- 'pickup_intro': 'Running late for a birthday? Reserve the gift online and it will be waiting at the counter.',
+ 'pickup_intro': 'Choose an available pickup option at checkout and wait for the ready-for-pickup email before coming to the counter.',
  'vfaq': [('Where do I pick up a Namaste Jewelry Store gift?',
            'At Namaste Bookshop, 2 West 14th Street, on the south side of the street just west of Fifth Avenue. Give the name on the order at the counter.'),
-          ('Is everything really under $30?', 'Yes, this site only lists jewelry under $30. The live price is shown on each listing and again at checkout.'),
-          ('Can I pick up a gift the same day?', 'Most pickup orders are ready in about 2 hours, so a same-day gift is usually possible during open hours.'),
+          ('Is everything really under $30?', 'Listings start under $30 in our daily catalog. Check the price for your selected option; checkout confirms the current price, shipping and tax.'),
+          ('Can I pick up a gift the same day?', 'Check the pickup option and estimate at checkout. Availability varies by item; wait for the ready-for-pickup email before traveling.'),
           ('Can I browse gifts in person?', 'Yes. Come in any day from 11 AM and look through the jewelry inside Namaste Bookshop.')],
  'llms': 'Jewelry gift store in Manhattan with real-stone bracelets, rings, pendants and earrings all under $30, sorted by price, birthstone and intention, '
-         'located inside Namaste Bookshop near Union Square, with free in-store pickup.'}
+         'located inside Namaste Bookshop near Union Square. Checkout confirms shipping and pickup options for each order.'}

@@ -1,0 +1,29 @@
+name: Storefront checks
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: pip install -r tests/requirements.txt
+      - run: python -m playwright install --with-deps chromium
+      - name: Check JavaScript syntax
+        run: |
+          node --check src/assets/site.js
+          node --check src/assets/cart.js
+          node --check src/assets/ga.js
+      - name: Build and test with isolated fixture products
+        run: python -m unittest discover -s tests -v

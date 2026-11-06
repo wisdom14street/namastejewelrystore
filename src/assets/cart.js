@@ -58,7 +58,7 @@
 ${x.max>0&&x.q>=x.max?`<span class="cimax">Limit ${x.max} per order</span>`:''}</div><b class="cil">${money(x.p*x.q)}</b></li>`;
   }
   function html(){
-    const n=count(),url=checkoutUrl(),pick=C.pickup?`<div class="cpick"><b>Free pickup inside Namaste Bookshop, ${esc(C.street)}</b><span>Choose <b>Pickup</b> at checkout and collect it inside Namaste Bookshop, 2 W 14th St, near Union Square. No shipping fee.${C.ready?' '+esc(C.ready)+'.':''}</span></div>`:`<div class="cpick"><b>Collect it at ${esc(C.street)}</b><span>Choose pickup at checkout if it is offered for your items, or ship from New York City.</span></div>`;
+    const n=count(),url=checkoutUrl(),pick=`<div class="cpick"><b>Pickup inside Namaste Bookshop, ${esc(C.street)}</b><span>Choose <b>Pickup</b> at checkout if it is offered for your items, or choose shipping. Wait for the ready-for-pickup email before coming to the store.</span></div>`;
     if(!items.length)return `<div class="cempty"><p>Your cart is empty.</p><a class="btn" href="/shop/">Start shopping</a></div>${pick}<div class="cups" data-ups></div>`;
     return `<ul class="clist">${items.map(rowHtml).join('')}</ul>
 <div class="csum"><div class="crow"><span>Subtotal (${live().reduce((a,x)=>a+x.q,0)} item${n===1?'':'s'})</span><b>${money(subtotal())}</b></div><p class="small">Shipping and tax are shown at checkout.</p></div>
