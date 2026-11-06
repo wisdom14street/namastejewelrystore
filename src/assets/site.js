@@ -2,6 +2,29 @@
   const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
   const money=v=>'$'+Number(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
   const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const shareButton=$('[data-share-gift]');
+  if(shareButton){
+    shareButton.hidden=false;
+    shareButton.addEventListener('click',async()=>{
+      const status=$('[data-share-status]'),fallback=$('[data-share-fallback]');
+      const url=new URL($('link[rel="canonical"]').href);
+      if(location.pathname.startsWith('/shop/')){
+        const current=new URLSearchParams(location.search);
+        ['cat','fam','brand','sty','mt','q','price','sort'].forEach(k=>{if(current.has(k))url.searchParams.set(k,current.get(k))});
+      }
+      url.searchParams.set('utm_source','customer_share');url.searchParams.set('utm_medium','referral');url.searchParams.set('utm_campaign','gift_ideas');
+      const done=method=>{if(typeof window.gtag==='function')try{window.gtag('event','share',{method,content_type:'gift',item_id:location.pathname})}catch(_){};};
+      shareButton.disabled=true;status.textContent='';fallback.hidden=true;
+      try{
+        if(navigator.share){
+          try{await navigator.share({title:document.title,url:url.href});done('native');return}
+          catch(e){if(e.name==='AbortError')return}
+        }
+        try{await navigator.clipboard.writeText(url.href);status.textContent='Gift link copied. Paste it into your message.';done('copy_link')}
+        catch(_){const input=$('#gift-share-url');input.value=url.href;fallback.hidden=false;input.focus();input.select();status.textContent='Copy the gift link above to share it.'}
+      }finally{shareButton.disabled=false}
+    });
+  }
   const readJSON=url=>fetch(url).then(r=>r.ok?r.json():Promise.reject(r.status));
   let _cat=null;const catalog=()=>_cat||(_cat=Promise.all([readJSON('/data/catalog.json'),readJSON('/data/meta.json')]).catch(e=>{_cat=null;throw e}));
   // menu

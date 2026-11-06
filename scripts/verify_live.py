@@ -29,6 +29,9 @@ def check():
     assert '<link rel="canonical" href="' + SITE + '/"' in home, 'Canonical mismatch'
     gifts = get('/gifts/stocking-stuffers/').decode()
     assert 'How to choose a small jewelry gift' in gifts, 'Gift guide missing'
+    assert 'data-share-gift' in gifts, 'Gift sharing control missing'
+    key = (ROOT / 'site' / 'indexnow-key.txt').read_text().strip()
+    assert get('/' + key + '.txt').decode() == key, 'IndexNow ownership file mismatch'
     assert SITE + '/sitemap.xml' in get('/robots.txt').decode(), 'Sitemap not advertised'
     sitemap = ET.fromstring(get('/sitemap.xml'))
     urls = {el.text for el in sitemap.findall('.//{*}loc')}

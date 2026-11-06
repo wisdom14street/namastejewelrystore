@@ -172,6 +172,41 @@ class StorefrontTests(unittest.TestCase):
         self.page.wait_for_function('document.querySelector("#buy").disabled')
         self.assertIn('no longer available', self.page.locator('#stock').inner_text())
 
+    def test_share_link_keeps_filters_without_forwarding_unrelated_parameters(self):
+        self.page.add_init_script("""Object.defineProperty(navigator, 'share', {value: undefined});
+            Object.defineProperty(navigator, 'clipboard', {value: {writeText: async value => {window.copiedGift = value}}});
+""")
+        self.page.goto(self.base + '/shop/?price=0-10&q=amethyst&private_token=discard&utm_source=old')
+        self.page.locator('[data-share-gift]').click()
+        self.page.wait_for_function('window.copiedGift')
+        url = urlparse(self.page.evaluate('window.copiedGift'))
+        self.assertEqual(url.netloc, 'namastejewelrystore.com')
+        self.assertEqual(parse_qs(url.query), {'price': ['0-10'], 'q': ['amethyst'],
+            'utm_source': ['customer_share'], 'utm_medium': ['referral'], 'utm_campaign': ['gift_ideas']})
+        self.assertIn('Gift link copied', self.page.locator('[data-share-status]').inner_text())
+        shares = self.page.evaluate("window.dataLayer.filter(e=>e[0]==='event'&&e[1]==='share').map(e=>Array.from(e))")
+        self.assertEqual(len(shares), 1)
+        self.assertEqual(shares[0][2]['method'], 'copy_link')
+
+    def test_share_cancel_and_clipboard_denial_are_safe(self):
+        self.page.add_init_script("""Object.defineProperty(navigator, 'share', {configurable:true,
+            value: async () => {throw new DOMException('Canceled', 'AbortError')}});
+            Object.defineProperty(navigator, 'clipboard', {value: {writeText: async () => {throw new Error('Denied')}}});
+""")
+        self.page.goto(self.base + '/gifts/stocking-stuffers/')
+        self.page.locator('[data-share-gift]').click()
+        self.assertFalse(self.page.locator('[data-share-gift]').is_disabled())
+        self.assertFalse(self.page.locator('[data-share-fallback]').is_visible())
+        self.assertEqual(self.page.evaluate("window.dataLayer.filter(e=>e[1]==='share')"), [])
+        self.page.evaluate("Object.defineProperty(navigator,'share',{value:undefined})")
+        self.page.locator('[data-share-gift]').click()
+        self.assertTrue(self.page.locator('[data-share-fallback]').is_visible())
+        self.assertIn('utm_source=customer_share', self.page.locator('#gift-share-url').input_value())
+        self.assertEqual(self.page.evaluate("window.dataLayer.filter(e=>e[1]==='share')"), [])
+        key = (ROOT / 'site' / 'indexnow-key.txt').read_text().strip()
+        self.assertEqual((self.dist / (key + '.txt')).read_text(), key)
+        self.assertNotIn(key + '.txt', (self.dist / 'sitemap.xml').read_text())
+
     def test_cached_product_page_keeps_its_original_option_usable(self):
         self.page.add_init_script('''let legacyProduct;
             Object.defineProperty(window, 'NI_PRODUCT', {
