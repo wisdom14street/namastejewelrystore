@@ -25,7 +25,9 @@
     return'';
   }
   document.addEventListener('click',function(e){try{
-    var a=e.target&&e.target.closest&&e.target.closest('a[href]');if(!a)return;var k=kind(a);if(!k)return;
+    var a=e.target&&e.target.closest&&e.target.closest('a[href]');if(!a)return;
+    if(a.hasAttribute('data-bookshop-link')){ga('storefront_referral',{destination:'namastebookshop.com',link_placement:'footer',transport_type:'beacon'});return}
+    var k=kind(a);if(!k)return;
     ga('generate_lead',{link_type:k,link_url:(a.getAttribute('href')||'').slice(0,200),link_text:(a.textContent||'').trim().replace(/\s+/g,' ').slice(0,100),transport_type:'beacon'});
   }catch(_){}},true);
 })();

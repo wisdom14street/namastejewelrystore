@@ -1,0 +1,41 @@
+name: Storefront checks
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: storefront-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: pip install -r tests/requirements.txt
+      - name: Use installed browser or install Chromium
+        run: |
+          browser="$(command -v chromium || command -v google-chrome || true)"
+          if [ -n "$browser" ]; then
+            echo "CHROMIUM_PATH=$browser" >> "$GITHUB_ENV"
+            "$browser" --version
+          else
+            python -m playwright install --with-deps chromium
+          fi
+      - name: Check JavaScript syntax
+        run: |
+          node --check src/assets/site.js
+          node --check src/assets/cart.js
+          node --check src/assets/ga.js
+      - name: Build and test with isolated fixture products
+        run: python -m unittest discover -s tests -v
