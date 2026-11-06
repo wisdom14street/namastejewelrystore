@@ -257,7 +257,7 @@ def page(path, title, desc, body, extra_head='', canonical=True, index=True, og_
     robots = '<meta name="robots" content="noindex,nofollow">' if PREVIEW else ('<meta name="robots" content="noindex">' if not index else '')
     gsv = f'<meta name="google-site-verification" content="{E(GSV)}">' if GSV and path == '/' else ''
     share = (f'<section class="wrap prose giftshare"><h2>Send a gift idea</h2><p>Share this page with someone choosing a gift.</p>'
-             f'<button type="button" class="btn alt" data-share-gift hidden>Share gift idea</button>'
+             f'<button type="button" data-share-gift hidden>Share gift idea</button>'
              f'<div data-share-fallback hidden><label for="gift-share-url">Gift link</label>'
              f'<input id="gift-share-url" type="url" readonly value="{E(url)}"></div>'
              '<p data-share-status role="status" aria-live="polite"></p></section>') if (path == '/' or path.startswith(('/products/', '/gifts/', '/birthstones/', '/shop/'))) else ''

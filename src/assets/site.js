@@ -4,7 +4,7 @@
   const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const shareButton=$('[data-share-gift]');
   if(shareButton){
-    shareButton.hidden=false;
+    shareButton.classList.add('btn','alt');shareButton.hidden=false;
     shareButton.addEventListener('click',async()=>{
       const status=$('[data-share-status]'),fallback=$('[data-share-fallback]');
       const url=new URL($('link[rel="canonical"]').href);
