@@ -256,6 +256,11 @@ def page(path, title, desc, body, extra_head='', canonical=True, index=True, og_
     ogx = (f'<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:type" content="image/jpeg">' if ogcard else '') + f'<meta property="og:image:alt" content="{E(BRAND + ': ' + P2C['og_tag'] + '. Inside Namaste Bookshop, 2 W 14th St, NYC') if ogcard else E(title)}"><meta name="twitter:image:alt" content="{E(BRAND) if ogcard else E(title)}">'
     robots = '<meta name="robots" content="noindex,nofollow">' if PREVIEW else ('<meta name="robots" content="noindex">' if not index else '')
     gsv = f'<meta name="google-site-verification" content="{E(GSV)}">' if GSV and path == '/' else ''
+    share = (f'<section class="wrap prose giftshare"><h2>Send a gift idea</h2><p>Share this page with someone choosing a gift.</p>'
+             f'<button type="button" class="btn alt" data-share-gift hidden>Share gift idea</button>'
+             f'<div data-share-fallback hidden><label for="gift-share-url">Gift link</label>'
+             f'<input id="gift-share-url" type="url" readonly value="{E(url)}"></div>'
+             '<p data-share-status role="status" aria-live="polite"></p></section>') if (path == '/' or path.startswith(('/products/', '/gifts/', '/birthstones/', '/shop/'))) else ''
     doc = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">{GA_HEAD}
 <title>{E(title)}</title><meta name="description" content="{E(desc)}">{robots}{gsv}{f'<link rel="canonical" href="{url}">' if canonical else ''}
 <meta property="og:site_name" content="{E(BRAND)}"><meta property="og:type" content="website"><meta property="og:title" content="{E(title)}"><meta property="og:description" content="{E(desc)}"><meta property="og:url" content="{url}"><meta property="og:image" content="{E(ogi)}">{ogx}
@@ -263,7 +268,7 @@ def page(path, title, desc, body, extra_head='', canonical=True, index=True, og_
 <meta name="theme-color" content="{CFG['theme']['ink']}"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/icon-192.png" sizes="192x192" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://cdn.shopify.com"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="{CFG['theme']['fonts']}" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css"><link rel="stylesheet" href="/assets/theme.css"><link rel="stylesheet" href="/assets/cart.css"><link rel="stylesheet" href="/assets/ux.css">{extra_head}</head>
-<body class="{CFG.get('layout', '')}">{nav()}<main id="main">{body}</main>{footer()}<div class="actionbar"><a href="tel:{TEL}">Call</a><a href="{DIRECTIONS}" rel="noopener" target="_blank">Directions</a><a href="/visit/">Hours</a></div>{cart_boot()}<script src="/assets/site.js" defer></script><script src="/assets/ux.js" defer></script>{GA_FOOT}</body></html>'''
+<body class="{CFG.get('layout', '')}">{nav()}<main id="main">{body}{share}</main>{footer()}<div class="actionbar"><a href="tel:{TEL}">Call</a><a href="{DIRECTIONS}" rel="noopener" target="_blank">Directions</a><a href="/visit/">Hours</a></div>{cart_boot()}<script src="/assets/site.js" defer></script><script src="/assets/ux.js" defer></script>{GA_FOOT}</body></html>'''
     out = os.path.join(DIST, path.strip('/'), 'index.html') if path.endswith('/') else os.path.join(DIST, path.strip('/'))
     os.makedirs(os.path.dirname(out), exist_ok=True)
     open(out, 'w').write(doc)
@@ -636,6 +641,14 @@ page('/cart/', f'Your cart | {BRAND}', f'Review your {BRAND} cart and check out 
 page('/404.html', f'Page not found | {BRAND}', 'Page not found', f'<section class="wrap prose"><h1>{E(C.NOT_FOUND)}</h1><p>The page you were looking for may have sold out or moved.</p><p><a class="btn" href="/shop/">Back to the shop</a></p></section>', canonical=False, index=False)
 
 # ---- sitemap / robots / CNAME ----
+# IndexNow proof of site ownership is intentionally public, not a secret.
+indexnow_path = os.path.join(ROOT, 'site', 'indexnow-key.txt')
+if not PREVIEW and os.path.exists(indexnow_path):
+    indexnow_key = open(indexnow_path).read().strip()
+    if not re.fullmatch(r'[A-Za-z0-9-]{8,128}', indexnow_key):
+        raise ValueError('Invalid IndexNow verification key')
+    open(os.path.join(DIST, indexnow_key + '.txt'), 'w').write(indexnow_key)
+
 open(os.path.join(DIST, '.nojekyll'), 'w').write('')
 if SITE.startswith('https://') and 'github.io' not in SITE: open(os.path.join(DIST, 'CNAME'), 'w').write(SITE.split('://', 1)[1] + '\n')
 today = datetime.date.today().isoformat()
